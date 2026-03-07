@@ -3,13 +3,10 @@ const app = express();
 
 app.use(express.json());
 
-let data = [
-  { id: 1, name: "Rahul" },
-  { id: 2, name: "Aman" }
-];
+let data = fs.readFile("data.txt","utf-8");
 
 app.get("/data", (req, res) => {
-  res.json(data);
+  res.send(data);
 });
 
 const PORT = process.env.PORT || 3000;
