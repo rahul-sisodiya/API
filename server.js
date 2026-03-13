@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 require("dotenv").config();
+
 const app = express();
 app.use(express.json());
 
@@ -13,7 +14,7 @@ app.post("/ask", async (req, res) => {
     try {
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${API_KEY}`,
             {
                 contents: [
                     {
@@ -23,13 +24,13 @@ app.post("/ask", async (req, res) => {
             }
         );
 
-        const answer =
-            response.data.candidates[0].content.parts[0].text;
+        const answer = response.data.candidates[0].content.parts[0].text;
 
         res.send(answer);
 
     } catch (error) {
 
+        console.log(JSON.stringify(error.response?.data, null, 2));
         res.send("Error talking to Gemini");
 
     }
@@ -39,5 +40,5 @@ app.post("/ask", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log("AI API running");
+    console.log("AI API running on port " + PORT);
 });
