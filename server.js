@@ -85,7 +85,7 @@ app.post("/ask", async (req, res) => {
             CLEAR HISTORY
             Type: hclear!!!
         */
-        if (userMessage === "hclear!!!") {
+        if (userMessage === "clear???") {
         
             await History.deleteMany({});
         
