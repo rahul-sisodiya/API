@@ -59,8 +59,7 @@ new mongoose.Schema({
 const History =
 mongoose.model(
     "History",
-    historySchema
-);
+    historySchema);
 
 const API_KEY =
 process.env.GEMINI_API_KEY;
@@ -84,9 +83,10 @@ app.post("/ask", async (req, res) => {
             .toLowerCase();
 
         /*
-            Return History
+            SHOW HISTORY
+            Type: history???
         */
-        if (userMessage === "history") {
+        if (userMessage === "history???") {
 
             const allHistory =
                 await History.find()
@@ -94,9 +94,42 @@ app.post("/ask", async (req, res) => {
                     createdAt: -1
                 });
 
-            return res.json(
-                allHistory
+            /*
+                No history found
+            */
+            if (allHistory.length === 0) {
+
+                return res.send(
+                    "No history found."
+                );
+
+            }
+
+            /*
+                Format History
+            */
+            let formattedText = "";
+
+            allHistory.forEach((item, index) => {
+
+                formattedText +=
+
+`Question ${index + 1}:
+${item.question}
+
+Answer:
+${item.answer}
+
+--------------------------------
+
+`;
+
+            });
+
+            return res.send(
+                formattedText
             );
+
         }
 
         /*
@@ -114,14 +147,23 @@ app.post("/ask", async (req, res) => {
         */
         if (existingQuestion) {
 
+            console.log(
+                "Returned from MongoDB"
+            );
+
             return res.send(
                 existingQuestion.answer
             );
+
         }
 
         /*
             Call Gemini API
         */
+        console.log(
+            "Calling Gemini API..."
+        );
+
         const response =
             await axios.post(
 
@@ -166,11 +208,13 @@ app.post("/ask", async (req, res) => {
     } catch (error) {
 
         console.log(
+
             JSON.stringify(
                 error.response?.data || error,
                 null,
                 2
             )
+
         );
 
         res.status(500).send(
@@ -182,7 +226,7 @@ app.post("/ask", async (req, res) => {
 });
 
 const PORT =
-    process.env.PORT || 3000;
+process.env.PORT || 3000;
 
 app.listen(PORT, () => {
 
