@@ -81,6 +81,19 @@ app.post("/ask", async (req, res) => {
             userMessage
             .trim()
             .toLowerCase();
+        /*
+            CLEAR HISTORY
+            Type: hclear!!!
+        */
+        if (userMessage === "hclear!!!") {
+        
+            await History.deleteMany({});
+        
+            return res.send(
+                "History cleared successfully."
+            );
+        
+        }
 
         /*
             SHOW HISTORY
